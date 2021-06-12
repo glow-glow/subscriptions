@@ -29,9 +29,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function posts()
+
+    public function subscriptions()
     {
-        return $this->hasMany(Post::class);
+        return $this->belongsToMany(Subscription::class,'subscription_user','user_id','subscription_id');
     }
 
 }
