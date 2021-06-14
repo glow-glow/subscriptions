@@ -22,4 +22,7 @@ Route::post('/login', [AuthenticatedSessionController::class, 'store'])
     Route::delete('subscriptions/user/{email}', ['uses' => 'Api\SubscribeController@deleteSubscribes', 'as' => 'delete.subscribes'])
         ->middleware('auth')
         ->where(['id' => '[0-9]+']);
+Route::get('subscriptions/rubric/{rubric_id}', ['uses' => 'Api\SubscribeController@subscriptionsRubric', 'as' => 'subscriptions.rubric'])
+    ->middleware('auth')
+    ->where(['rubric_id' => '[0-9]+']);
 

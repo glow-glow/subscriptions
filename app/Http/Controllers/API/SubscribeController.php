@@ -9,6 +9,7 @@ use App\Models\Rubric;
 use Response;
 use App\Models\Subscribe;
 use Cassandra\Exception\ValidationException;
+use SimpleXMLElement;
 
 class SubscribeController extends Controller
 {
@@ -128,6 +129,27 @@ class SubscribeController extends Controller
         // Проверка каким способом отдавать данные
         $response = ($xml)? $this->array_to_xml($responseArray) : Response::json($responseArray);
         return $response;
+    }
+    /**
+     * Преобразование массива в xml
+     * @param $data
+     * @param null $xml_data
+     * @return xml|bool|string
+     */
+    private function array_to_xml ( $data, &$xml_data = null) {
+        if (!isset($xml_data)) $xml_data = new SimpleXMLElement('<?xml version="1.0"?><data></data>');
+        foreach( $data as $key => $value ) {
+            if( is_numeric($key) ){
+                $key = 'item'.$key;
+            }
+            if( is_array($value) ) {
+                $subnode = $xml_data->addChild($key);
+                $this->array_to_xml($value, $subnode);
+            } else {
+                $xml_data->addChild("$key",htmlspecialchars("$value"));
+            }
+        }
+        return $xml_data->asXML();
     }
 
 }
